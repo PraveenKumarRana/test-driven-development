@@ -1,29 +1,34 @@
 const expect = require("chai").expect;
 
-describe("test_suite1", function () {
-    before("Root Setup Code", function () {
-        console.log("Root setup code");
-    })
+function myAsyncFunction(callback) {
+    setTimeout(function () {
+        callback("blah");
+    }, 50);
+}
 
-    beforeEach("Setup for each test", function () {
-        console.log("Setup code for each test");
-    })
 
-    it("test1", function () {
-        console.log("test1");
-        expect(true).to.equal(true);
-    })
+function myPromiseFunction() {
+    return new Promise(function (resolve, reject) {
+        setTimeout(function () {
+            resolve("blah");
+        }, 50);
+    });
+}
 
-    it("test2", function () {
-        console.log("test2");
-        expect(false).to.equal(false);
+it("test_async", function (done) {
+    myAsyncFunction(function (str) {
+        expect(str).to.equal("blah");
+        done();
     })
+})
 
-    after("Root Teardown Code", function () {
-        console.log("Root teardown code");
-    })
+it("test_promise", function () {
+    return myPromiseFunction().then(function (res) {
+        expect(res).to.equal("blah");
+    });
+})
 
-    afterEach("Teardown code for each test", function () {
-        console.log("Teardown code for each test");
-    })
+it("test_async_await", async function () {
+    var result = await myPromiseFunction();
+    expect(result).to.equal("blah");
 })
